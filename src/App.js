@@ -5,8 +5,7 @@ import { MdCancel } from "react-icons/md";
 const App = () => {
   const [text, setText] = useState("")
   const [todos, setTodos] = useState([])
-  const initialValue = useRef(0)
-
+const [count, setCount]=useState(0)
 
   const handelChange = (e) => {
     setText(e.target.value)
@@ -20,18 +19,25 @@ const App = () => {
     }
     setTodos([...todos, newUser])
     setText("")
+    setCount(count+1)
   }
-
   const handelDelete = (id) => {
-    const filterData = todos.filter(todo => todo.id != id)
+    todos.forEach(ele => {
+      if ((ele.id === id) && ele.status === false) {
+        setCount(count - 1)
+      }
+    })
+    const filterData = todos.filter((item) => item.id !== id);
     setTodos(filterData)
   }
 
   const handelStatus = (id) => {
     const updateData = todos.map((item) => {
       if (item.id === id) {
-        initialValue.current = initialValue.current + 1
+        count > 0 && setCount(count - 1)
+
         return { ...item, status: !item.status }
+
       } else {
         return item
       }
@@ -43,7 +49,7 @@ const App = () => {
 
   return (
     <div className='container'>
-      <h1>Pending Task {todos.length - initialValue.current}</h1>
+      <h1>Pending Task ({count})</h1>
       <div>
         {todos && todos.map((ele, index) => (
           <div key={index} className="Single-data">
